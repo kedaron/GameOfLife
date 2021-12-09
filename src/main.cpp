@@ -46,16 +46,23 @@ public:
             std::cout << expectedParams_[i] << " ";
         }
         std::cout << std::endl;
+        std::cout << "Optional Parameters: ";
+        for(int i = 0; i < optionalParamsCount_; i++){
+            std::cout << optionalParams_[i] << " ";
+        }
     }
 };
 
 int main(int argc, char** argv){
     InputReader reader;
-    const int epCount = 3;
+    const int epCount = 3, opCount = 1;
     const char *ep[epCount] = {"--load", "--save", "--generations"};
+    const char *op[opCount] = {"--measure"};
 
     reader.setExpectedParams(ep, epCount);
+    reader.setOptionalParams(op, opCount);
     reader.printParams();
+
     bool validInput = true;
     for(int i = 1; i < argc; i++){
         //std::cout << argv[i] << std::endl;
