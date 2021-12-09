@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <string>
+#include <map>
 
 class InputReader{
 private:
@@ -23,7 +24,25 @@ private:
             strcpy_s((*internParams)[i], len+1, params[i]);
         }
     }
+    bool checkExpectedParams(char **argv, int argc){
+        bool valid = true;
+        for(int i = 0; i < expectedParamsCount_; i++){
+            bool found = false;
+            for(int j = 0; j < argc; j++){
+                if(std::strcmp(expectedParams_[i], argv[j]) == 0){
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                valid = false;
+                break;
+            }
+        }
+        return valid;
+    }
 public:
+    std::map<std::string, std::string> params;
     InputReader(){
         expectedParamsCount_ = 0;
         expectedParams_ = {};
@@ -40,7 +59,16 @@ public:
     void setOptionalParams(const char **optionalParams, int count){
         setParams(optionalParams, count, &optionalParams_, &optionalParamsCount_);
     }
-    void printParams(){
+    bool parseParams(char **argv, int argc){
+        if(!checkExpectedParams(argv, argc)){
+            return false;
+        }
+        return true;
+        /*for(int i = 0; i < argc; i+=2){
+            params[argv[i]] = argv[i+1];
+        }*/
+    }
+    void printParams() const{
         std::cout << "Expected Parameters: ";
         for(int i = 0; i < expectedParamsCount_; i++){
             std::cout << expectedParams_[i] << " ";
@@ -50,7 +78,9 @@ public:
         for(int i = 0; i < optionalParamsCount_; i++){
             std::cout << optionalParams_[i] << " ";
         }
+        std::cout << std::endl;
     }
+    InputReader& operator=(const InputReader &other) = delete;
 };
 
 int main(int argc, char** argv){
@@ -61,7 +91,14 @@ int main(int argc, char** argv){
 
     reader.setExpectedParams(ep, epCount);
     reader.setOptionalParams(op, opCount);
-    reader.printParams();
+    //reader.printParams();
+
+    if(!reader.parseParams(argv, argc)){
+        std::cout << "Invalid parameters..." << std::endl;
+        reader.printParams();
+        std::cout << "Please Use the following shape:" << std::endl;
+        std::cout << "--load <param1> --save <param2> --generations <param3> --measure" << std::endl;
+    }
 
     bool validInput = true;
     for(int i = 1; i < argc; i++){
