@@ -1,9 +1,3 @@
-#if defined(_WIN32) && defined(_DEBUG)
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-#endif
-
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -25,7 +19,7 @@ private:
         *internParams = new char*[count];
         for(int i = 0; i < count; i++){
             int len = std::strlen(params[i]);
-            (*internParams)[i] = new char[len];
+            (*internParams)[i] = new char[len+1];
             strcpy_s((*internParams)[i], len+1, params[i]);
         }
     }
@@ -56,14 +50,9 @@ public:
 };
 
 int main(int argc, char** argv){
-#if defined (_WIN32) && defined(_DEBUG)
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif // _WIN32 && _DEBUG
-
     InputReader reader;
     const int epCount = 3;
     const char *ep[epCount] = {"--load", "--save", "--generations"};
-    int *test = new int;
 
     reader.setExpectedParams(ep, epCount);
     reader.printParams();
