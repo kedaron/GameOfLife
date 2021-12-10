@@ -24,7 +24,7 @@ private:
             strcpy_s((*internParams)[i], len+1, params[i]);
         }
     }
-    bool checkExpectedParams(char **argv, int argc){
+    bool checkExpectedParams(char **argv, int argc) const{
         bool valid = true;
         for(int i = 0; i < expectedParamsCount_; i++){
             bool found = false;
@@ -49,6 +49,7 @@ public:
         optionalParamsCount_ = 0;
         optionalParams_ = {};
     }
+    InputReader(const InputReader &other) = delete;
     ~InputReader(){
         deleteParams(&expectedParams_, expectedParamsCount_);
         deleteParams(&optionalParams_, optionalParamsCount_);
@@ -63,12 +64,21 @@ public:
         if(!checkExpectedParams(argv, argc)){
             return false;
         }
+        for(int i = 1; i < argc; i++){ // i = 1 => first param is program name => skip
+            if(argv[i][0] == '-' && argv[i][1] == '-'){
+                params[argv[i]] = "";
+                if((i < argc-1) && !(argv[i+1][0] && argv[i+1][1] == '-')){
+                    params[argv[i]] = argv[i+1];
+                }
+            }
+        }
         return true;
-        /*for(int i = 0; i < argc; i+=2){
-            params[argv[i]] = argv[i+1];
-        }*/
     }
     void printParams() const{
+        for(auto it = params.begin(); it != params.end(); it++)
+            std::cout << it->first << ": " << it->second << std::endl;
+    }
+    void printExpectedParams() const{
         std::cout << "Expected Parameters: ";
         for(int i = 0; i < expectedParamsCount_; i++){
             std::cout << expectedParams_[i] << " ";
@@ -91,30 +101,15 @@ int main(int argc, char** argv){
 
     reader.setExpectedParams(ep, epCount);
     reader.setOptionalParams(op, opCount);
-    //reader.printParams();
 
     if(!reader.parseParams(argv, argc)){
         std::cout << "Invalid parameters..." << std::endl;
-        reader.printParams();
+        reader.printExpectedParams();
         std::cout << "Please Use the following shape:" << std::endl;
         std::cout << "--load <param1> --save <param2> --generations <param3> --measure" << std::endl;
     }
-
-    bool validInput = true;
-    for(int i = 1; i < argc; i++){
-        //std::cout << argv[i] << std::endl;
-        if(std::strcmp(argv[i], "--load") == 0){
-            // load
-        }
-        if(std::strcmp(argv[i], "--save") == 0){
-            // save
-        }
-        if(std::strcmp(argv[i], "--generations") == 0){
-            // generations
-        }
-        if(std::strcmp(argv[i], "--measure") == 0){
-            // save
-        }
+    else{
+        reader.printParams();
     }
 
     return 0;
