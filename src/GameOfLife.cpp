@@ -28,7 +28,7 @@ bool GameOfLife::loadField(std::string path){
     int row = 0;
     while(std::getline(file, line)){
         int len = line.length();
-        if (len != x_){
+        if ((len != x_) || (row > y_ - 1)){
             file.close();
             return false;
         }
@@ -37,7 +37,7 @@ bool GameOfLife::loadField(std::string path){
         row++;
     }
     file.close();
-    return true;
+    return !(row < y_); // last check for valid shape
 }
 
 bool GameOfLife::saveField(std::string path) const {

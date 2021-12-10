@@ -28,6 +28,7 @@ int main(int argc, char** argv){
 
     if(!gol.saveField(reader.params["--save"])){
         std::cout << "Error while trying to save File '" << reader.params["--save"] << std::endl;
+        return 0;
     }
 
     gol.printField();
