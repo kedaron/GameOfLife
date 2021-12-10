@@ -60,12 +60,14 @@ bool GameOfLife::loadField(std::string path){
     return true;
 }
 
-void GameOfLife::output(std::function<void(int, int)> func, std::function<void()> func2){
+void GameOfLife::output(std::streambuf* buf){
+    std::ostream out(buf);
+    out << x_ << "," << y_ << std::endl;
     for(int y = 0; y < y_; y++){
         for(int x = 0; x < x_; x++)
-            func(x, y);
+            out << field_[y*x_ + x];
         if(y < y_-1)
-            func2();
+            out << std::endl;
     }
 }
 
@@ -74,15 +76,11 @@ bool GameOfLife::saveField(std::string path) {
     if(file.fail()){
         return false;
     }
-    file << x_ << "," << y_ << std::endl;
-    output([&](int x, int y){file << field_[y*x_ + x];},
-            [&](){file << std::endl;});
+    output(file.rdbuf());
     file.close();
     return true;
 }
 
 void GameOfLife::printField() {
-    std::cout << x_ << "," << y_ << std::endl;
-    output([&](int x, int y){std::cout << field_[y*x_ + x];},
-            [&](){std::cout << std::endl;});
+    output(std::cout.rdbuf());
 }
