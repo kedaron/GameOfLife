@@ -4,6 +4,7 @@
 
 int main(int argc, char** argv){
     ParameterReader reader;
+    GameOfLife gol;
 
     // define input parameters
     const int epCount = 3, opCount = 1;
@@ -20,5 +21,15 @@ int main(int argc, char** argv){
     }
 
     // gameoflife
+    if(!gol.loadField(reader.params["--load"].c_str())){
+        std::cout << "File '" << reader.params["--load"] << "' not found or invalid shape." << std::endl;
+        return 0;
+    }
+
+    if(!gol.saveField(reader.params["--save"])){
+        std::cout << "Error while trying to save File '" << reader.params["--save"] << std::endl;
+    }
+
+    gol.printField();
     return 0;
 }

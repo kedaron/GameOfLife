@@ -11,12 +11,12 @@ private:
 public:
     std::map<std::string, std::string> params;
     ParameterReader();
-    ParameterReader(const ParameterReader &other) = delete;
+    ParameterReader(const ParameterReader& other) = delete;
     ~ParameterReader();
     void setExpectedParams(const char **expectedParams, int count);
     void setOptionalParams(const char **optionalParams, int count);
     bool parseParams(char **argv, int argc);
     void printParams() const;
     void printExpectedParams() const;
-    ParameterReader& operator=(const ParameterReader &other) = delete;
+    ParameterReader& operator=(const ParameterReader& other) = delete;
 };
