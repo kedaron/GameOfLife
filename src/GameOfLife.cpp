@@ -1,5 +1,4 @@
 #include "GameOfLife.h"
-#include <fstream>
 #include <sstream>
 #include <iostream>
 #include <algorithm>
@@ -12,16 +11,21 @@ GameOfLife::~GameOfLife(){
     delete [] field_;
 }
 
-bool GameOfLife::validateField(std::string path) const {
+void GameOfLife::parseSize(std::ifstream& file, std::string& line, int& x, int& y){
+    std::getline(file, line);
+    std::string delimiter = ",";
+    x = std::stoi(line.substr(0, line.find(delimiter)));
+    y = std::stoi(line.substr(line.find(delimiter) + 1, line.find('\n')));
+}
+
+bool GameOfLife::validateField(std::string path) {
     std::ifstream file(path);
     if(file.fail()){
         return false;
     }
     std::string line;
-    std::getline(file, line);
-    std::string delimiter = ",";
-    int x = std::stoi(line.substr(0, line.find(delimiter)));
-    int y = std::stoi(line.substr(line.find(delimiter) + 1, line.find('\n')));
+    int x, y;
+    parseSize(file, line, x, y);
     int row = 0;
     while(std::getline(file, line)){
         int len = line.length();
@@ -31,6 +35,7 @@ bool GameOfLife::validateField(std::string path) const {
         }
         row++;
     }
+    file.close();
     return row == y;
 }
 
@@ -40,10 +45,7 @@ bool GameOfLife::loadField(std::string path){
         return false;
     }
     std::string line;
-    std::getline(file, line);
-    std::string delimiter = ",";
-    x_ = std::stoi(line.substr(0, line.find(delimiter)));
-    y_ = std::stoi(line.substr(line.find(delimiter) + 1, line.find('\n')));
+    parseSize(file, line, x_, y_);
     field_ = new char[x_*y_];
 
     int row = 0;

@@ -40,6 +40,11 @@
         "xtree": "cpp",
         "fstream": "cpp",
         "sstream": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "functional": "cpp",
+        "list": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "xhash": "cpp"
     }
 }
