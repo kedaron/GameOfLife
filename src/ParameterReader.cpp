@@ -37,12 +37,9 @@ bool ParameterReader::checkExpectedParams(char **argv, int argc) const{
     }
     return valid;
 }
-ParameterReader::ParameterReader(){
-    expectedParamsCount_ = 0;
-    expectedParams_ = {};
-    optionalParamsCount_ = 0;
-    optionalParams_ = {};
-}
+ParameterReader::ParameterReader()
+    : expectedParamsCount_(0), optionalParamsCount_(0), expectedParams_(nullptr), optionalParams_(nullptr)
+{}
 ParameterReader::~ParameterReader(){
     deleteParams(&expectedParams_, expectedParamsCount_);
     deleteParams(&optionalParams_, optionalParamsCount_);
