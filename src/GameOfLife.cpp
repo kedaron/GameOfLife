@@ -12,10 +12,31 @@ GameOfLife::~GameOfLife(){
     delete [] field_;
 }
 
+bool GameOfLife::validateField(std::string path) const {
+    std::ifstream file(path);
+    if(file.fail()){
+        return false;
+    }
+    std::string line;
+    std::getline(file, line);
+    std::string delimiter = ",";
+    int x = std::stoi(line.substr(0, line.find(delimiter)));
+    int y = std::stoi(line.substr(line.find(delimiter) + 1, line.find('\n')));
+    int row = 0;
+    while(std::getline(file, line)){
+        int len = line.length();
+        if (len != x){
+            file.close();
+            return false;
+        }
+        row++;
+    }
+    return row == y;
+}
+
 bool GameOfLife::loadField(std::string path){
     std::ifstream file(path);
     if(file.fail()){
-        file.close();
         return false;
     }
     std::string line;
@@ -28,16 +49,12 @@ bool GameOfLife::loadField(std::string path){
     int row = 0;
     while(std::getline(file, line)){
         int len = line.length();
-        if ((len != x_) || (row > y_ - 1)){
-            file.close();
-            return false;
-        }
         for(int i = 0; i < len; i++)
             field_[row*x_ + i] = line[i];
         row++;
     }
     file.close();
-    return !(row < y_); // last check for valid shape
+    return true;
 }
 
 bool GameOfLife::saveField(std::string path) const {

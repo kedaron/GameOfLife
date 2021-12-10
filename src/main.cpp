@@ -21,7 +21,8 @@ int main(int argc, char** argv){
     }
 
     // gameoflife
-    if(!gol.loadField(reader.params["--load"].c_str())){
+    std::string path = reader.params["--load"].c_str();
+    if(!gol.validateField(path) || !gol.loadField(path)){
         std::cout << "File '" << reader.params["--load"] << "' not found or invalid shape." << std::endl;
         return 0;
     }
