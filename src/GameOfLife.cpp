@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 
+
 GameOfLife::GameOfLife() 
     : x_(0), y_(0), field_(nullptr)
 {}
@@ -59,28 +60,29 @@ bool GameOfLife::loadField(std::string path){
     return true;
 }
 
-bool GameOfLife::saveField(std::string path) const {
+void GameOfLife::output(std::function<void(int, int)> func, std::function<void()> func2){
+    for(int y = 0; y < y_; y++){
+        for(int x = 0; x < x_; x++)
+            func(x, y);
+        if(y < y_-1)
+            func2();
+    }
+}
+
+bool GameOfLife::saveField(std::string path) {
     std::ofstream file(path);
     if(file.fail()){
         return false;
     }
     file << x_ << "," << y_ << std::endl;
-    for(int y = 0; y < y_; y++){
-        for(int x = 0; x < x_; x++)
-            file << field_[y*x_ + x];
-        if(y < y_-1)
-            file << std::endl;
-    }
+    output([&](int x, int y){file << field_[y*x_ + x];},
+            [&](){file << std::endl;});
     file.close();
     return true;
 }
 
-void GameOfLife::printField() const {
+void GameOfLife::printField() {
     std::cout << x_ << "," << y_ << std::endl;
-    for(int y = 0; y < y_; y++){
-        for(int x = 0; x < x_; x++)
-            std::cout << field_[y*x_ + x];
-        if(y < y_-1)
-            std::cout << std::endl;
-    }
+    output([&](int x, int y){std::cout << field_[y*x_ + x];},
+            [&](){std::cout << std::endl;});
 }
