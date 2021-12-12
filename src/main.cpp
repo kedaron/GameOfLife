@@ -27,11 +27,14 @@ int main(int argc, char** argv){
         return 0;
     }
 
+    int gens = std::stoi(reader.params["--generations"]);
+    gol.simulateGenerations(gens);
+
     if(!gol.saveField(reader.params["--save"])){
         std::cout << "Error while trying to save File '" << reader.params["--save"] << std::endl;
         return 0;
     }
 
-    gol.printField();
+    //gol.printField();
     return 0;
 }

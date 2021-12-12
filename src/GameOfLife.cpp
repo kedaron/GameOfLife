@@ -5,11 +5,60 @@
 
 
 GameOfLife::GameOfLife() 
-    : x_(0), y_(0), field_(nullptr)
+    : x_(0), y_(0), fieldSize_(0), field_(nullptr)
 {}
 
 GameOfLife::~GameOfLife(){
     delete [] field_;
+}
+
+int GameOfLife::checkSurroundings(const int index, const char checkChar) const {
+    int count = 0;
+
+    //left/right
+    if(field_[index-1] == checkChar)
+        count++;
+    if(field_[index+1] == checkChar)
+        count++;
+
+    //top row
+    if(field_[(index-x_)%fieldSize_] == checkChar)
+        count++;
+    if(field_[(index-x_-1)%fieldSize_] == checkChar)
+        count++;
+    if(field_[(index-x_+1)%fieldSize_] == checkChar)
+        count++;
+
+    //bottom row
+    if(field_[(index+x_)%fieldSize_] == checkChar)
+        count++;
+    if(field_[(index+x_-1)%fieldSize_] == checkChar)
+        count++;
+    if(field_[(index+x_+1)%fieldSize_] == checkChar)
+        count++;
+
+    return count;
+}
+
+void GameOfLife::simulateGenerations(int gens){
+    for(int gen = 0; gen < gens; gen++){
+        for(int y = 0; y < y_; y++){
+            for(int x = 0; x < x_; x++){
+                const int i = y*x_ + x;
+                // Rule 1
+                if(field_[i] == '.')
+                    if(checkSurroundings(i, 'x') == 3)
+                        field_[i] = 'x';
+                
+                // Rule 2-4
+                else if(field_[i] == 'x' ){
+                    int s = checkSurroundings(i, 'x');
+                    if(s < 2 || s > 3)
+                        field_[i] = '.';
+                }
+            }
+        }
+    }
 }
 
 void GameOfLife::parseSize(std::ifstream& file, std::string& line, int& x, int& y){
@@ -47,6 +96,7 @@ bool GameOfLife::loadField(std::string path){
     }
     std::string line;
     parseSize(file, line, x_, y_);
+    fieldSize_ = x_*y_;
     field_ = new char[x_*y_];
 
     int row = 0;
