@@ -5,7 +5,6 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
-#include <functional>
 #include "GameOfLife.h"
 #include "ParameterReader.h"
 
@@ -36,9 +35,9 @@ public:
 
         return buff.str();
     }
-    int measure(std::function<int(GameOfLife*, ParameterReader*)> func, GameOfLife* gol, ParameterReader* reader) {
+    int measure(int (*func)()) {
         start();
-        int success = func(gol, reader);
+        int success = func();
         stop();
 
         return success;
