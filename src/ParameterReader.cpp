@@ -80,3 +80,6 @@ void ParameterReader::printExpectedParams() const{
     }
     std::cout << std::endl;
 }
+std::string& ParameterReader::operator[](std::string key){
+    return params[key];
+}

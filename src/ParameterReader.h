@@ -22,6 +22,7 @@ public:
     void printParams() const;
     void printExpectedParams() const;
     ParameterReader& operator=(const ParameterReader& other) = delete;
+    std::string& operator[](std::string key);
 };
 
 #endif

@@ -7,7 +7,7 @@ GameOfLife g_gol;
 ParameterReader g_reader;
 
 int setup(){
-    std::string path = g_reader.params["--load"];
+    std::string path = g_reader["--load"];
     if(!g_gol.validateField(path) || !g_gol.loadField(path)){
         std::cout << "File '" << path << "' not found or invalid shape." << std::endl;
         return 0;
@@ -17,9 +17,9 @@ int setup(){
 
 int compute(){
     try{
-        int gens = std::stoi(g_reader.params["--generations"]);
+        int gens = std::stoi(g_reader["--generations"]);
         g_gol.simulateGenerations(gens);
-    }catch(std::exception& e){
+    }catch(std::exception&){
         std::cout << "Invalid value for generations." << std::endl;
         return 0;
     }
@@ -27,7 +27,7 @@ int compute(){
 }
 
 int finalize(){
-    std::string path = g_reader.params["--save"];
+    std::string path = g_reader["--save"];
     if(!g_gol.saveField(path)){
         std::cout << "Error while trying to save File '" << path << std::endl;
         return 0;
@@ -36,7 +36,6 @@ int finalize(){
 }
 
 int main(int argc, char** argv){
-    // TODO: [] overloading in parameterreader
     Stopwatch sw;
 
     // define input parameters

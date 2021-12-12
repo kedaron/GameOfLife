@@ -19,11 +19,11 @@ public:
     void stop(){
         stop_ = std::chrono::high_resolution_clock::now();
     }
-    long elapsedTimeMs() const {
+    long long elapsedTimeMs() const {
         return std::chrono::duration_cast<std::chrono::milliseconds>(stop_ - start_).count();
     }
     std::string elapsedTimeFormated() const{
-        long time = elapsedTimeMs();
+        long long time = elapsedTimeMs();
         int ms = time%1000;
         int sec = (time%60000)/1000;
         int min = time/60000;
