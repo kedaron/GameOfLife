@@ -20,40 +20,74 @@ int GameOfLife::pmod(int i, int n){
 int GameOfLife::checkSurroundings(char *const field, const int index, const char checkChar){
     int count = 0;
 
-    //left/right
     if(index%x_ == 0){
+        //left/right
         if(field[index+x_-1] == checkChar)
             count++;
         if(field[(index+1)] == checkChar)
             count++;
+        //top row
+        if(field[pmod(index-x_, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index-1, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index-x_+1, fieldSize_)] == checkChar)
+            count++;
+
+        //bottom row
+        if(field[pmod(index+x_, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index+2*x_-1, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index+x_+1, fieldSize_)] == checkChar)
+            count++;
     }
     else if(index%x_ == x_-1){
+        //left/right
         if(field[index-x_+1] == checkChar)
             count++;
         if(field[(index-1)] == checkChar)
             count++;
+        //top row
+        if(field[pmod(index-x_, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index-x_-1, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index-2*x_+1, fieldSize_)] == checkChar)
+            count++;
+
+        //bottom row
+        if(field[pmod(index+x_, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index+x_-1, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index+1, fieldSize_)] == checkChar)
+            count++;
     }
     else{
+        //left/right
         if(field[(index-1)] == checkChar)
             count++;
         if(field[(index+1)] == checkChar)
             count++;
-    }
-    //top row
-    if(field[pmod(index-x_, fieldSize_)] == checkChar)
-        count++;
-    if(field[pmod(index-x_-1, fieldSize_)] == checkChar)
-        count++;
-    if(field[pmod(index-x_+1, fieldSize_)] == checkChar)
-        count++;
 
-    //bottom row
-    if(field[pmod(index+x_, fieldSize_)] == checkChar)
-        count++;
-    if(field[pmod(index+x_-1, fieldSize_)] == checkChar)
-        count++;
-    if(field[pmod(index+x_+1, fieldSize_)] == checkChar)
-        count++;
+        //top row
+        if(field[pmod(index-x_, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index-x_-1, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index-x_+1, fieldSize_)] == checkChar)
+            count++;
+
+        //bottom row
+        if(field[pmod(index+x_, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index+x_-1, fieldSize_)] == checkChar)
+            count++;
+        if(field[pmod(index+x_+1, fieldSize_)] == checkChar)
+            count++;
+    }
+    
 
     return count;
 }
