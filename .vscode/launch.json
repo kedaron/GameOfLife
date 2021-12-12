@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}\\bin\\${workspaceFolderBasename}.exe",
-            "args": ["--load", "..\\bin\\file_in.gol", "--save", "..\\bin\\file_out.gol", "--generations", "3", "--measure"],
+            "args": ["--load", "..\\bin\\random250_in.gol", "--save", "..\\bin\\file_out.gol", "--generations", "3", "--measure"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

@@ -2,6 +2,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <cstring>
 
 
 GameOfLife::GameOfLife() 
@@ -12,53 +13,76 @@ GameOfLife::~GameOfLife(){
     delete [] field_;
 }
 
-int GameOfLife::checkSurroundings(const int index, const char checkChar) const {
+int GameOfLife::pmod(int i, int n){
+    return (i % n + n) % n;
+}
+
+int GameOfLife::checkSurroundings(char *const field, const int index, const char checkChar){
     int count = 0;
 
     //left/right
-    if(field_[index-1] == checkChar)
-        count++;
-    if(field_[index+1] == checkChar)
-        count++;
-
+    if(index%x_ == 0){
+        if(field[index+x_-1] == checkChar)
+            count++;
+        if(field[(index+1)] == checkChar)
+            count++;
+    }
+    else if(index%x_ == x_-1){
+        if(field[index-x_+1] == checkChar)
+            count++;
+        if(field[(index-1)] == checkChar)
+            count++;
+    }
+    else{
+        if(field[(index-1)] == checkChar)
+            count++;
+        if(field[(index+1)] == checkChar)
+            count++;
+    }
     //top row
-    if(field_[(index-x_)%fieldSize_] == checkChar)
+    if(field[pmod(index-x_, fieldSize_)] == checkChar)
         count++;
-    if(field_[(index-x_-1)%fieldSize_] == checkChar)
+    if(field[pmod(index-x_-1, fieldSize_)] == checkChar)
         count++;
-    if(field_[(index-x_+1)%fieldSize_] == checkChar)
+    if(field[pmod(index-x_+1, fieldSize_)] == checkChar)
         count++;
 
     //bottom row
-    if(field_[(index+x_)%fieldSize_] == checkChar)
+    if(field[pmod(index+x_, fieldSize_)] == checkChar)
         count++;
-    if(field_[(index+x_-1)%fieldSize_] == checkChar)
+    if(field[pmod(index+x_-1, fieldSize_)] == checkChar)
         count++;
-    if(field_[(index+x_+1)%fieldSize_] == checkChar)
+    if(field[pmod(index+x_+1, fieldSize_)] == checkChar)
         count++;
 
     return count;
 }
 
 void GameOfLife::simulateGenerations(int gens){
+    char* snapshot = new char[fieldSize_];
     for(int gen = 0; gen < gens; gen++){
+        for(int i = 0; i < fieldSize_; i++)
+            snapshot[i] = field_[i];
+
         for(int y = 0; y < y_; y++){
             for(int x = 0; x < x_; x++){
                 const int i = y*x_ + x;
                 // Rule 1
-                if(field_[i] == '.')
-                    if(checkSurroundings(i, 'x') == 3)
+                if(snapshot[i] == '.'){
+                    if(checkSurroundings(snapshot, i, 'x') == 3)
                         field_[i] = 'x';
+                }
                 
                 // Rule 2-4
-                else if(field_[i] == 'x' ){
-                    int s = checkSurroundings(i, 'x');
+                else if(snapshot[i] == 'x' ){
+                    int s = checkSurroundings(snapshot, i, 'x');
                     if(s < 2 || s > 3)
                         field_[i] = '.';
                 }
             }
         }
     }
+    delete [] snapshot;
 }
 
 void GameOfLife::parseSize(std::ifstream& file, std::string& line, int& x, int& y){
