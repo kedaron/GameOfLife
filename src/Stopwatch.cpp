@@ -1,12 +1,19 @@
+#ifndef STOPWATCH
+#define STOPWATCH
+
 #include <chrono>
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <functional>
+#include "GameOfLife.h"
+#include "ParameterReader.h"
 
 class Stopwatch{
 private:
     decltype(std::chrono::high_resolution_clock::now()) start_, stop_;
 public:
+
     void start(){
         start_ = std::chrono::high_resolution_clock::now();
     }
@@ -29,4 +36,13 @@ public:
 
         return buff.str();
     }
+    int measure(std::function<int(GameOfLife*, ParameterReader*)> func, GameOfLife* gol, ParameterReader* reader) {
+        start();
+        int success = func(gol, reader);
+        stop();
+
+        return success;
+    }
 };
+
+#endif

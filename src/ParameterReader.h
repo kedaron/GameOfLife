@@ -1,3 +1,6 @@
+#ifndef PARAMETERREADER
+#define PARAMETERREADER
+
 #include <map>
 #include <string>
 
@@ -20,3 +23,5 @@ public:
     void printExpectedParams() const;
     ParameterReader& operator=(const ParameterReader& other) = delete;
 };
+
+#endif

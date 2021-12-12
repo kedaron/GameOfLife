@@ -3,10 +3,39 @@
 #include "GameOfLife.h"
 #include "Stopwatch.cpp"
 
+int setup(GameOfLife* gol, ParameterReader* reader){
+    std::string path = reader->params["--load"];
+    if(!gol->validateField(path) || !gol->loadField(path)){
+        std::cout << "File '" << path << "' not found or invalid shape." << std::endl;
+        return 0;
+    }
+    return 1;
+}
+
+int compute(GameOfLife* gol, ParameterReader* reader){
+    try{
+        int gens = std::stoi(reader->params["--generations"]);
+        gol->simulateGenerations(gens);
+    }catch(std::exception& e){
+        std::cout << "Invalid value for generations." << std::endl;
+        return 0;
+    }
+    return 1;
+}
+
+int finalize(GameOfLife* gol, ParameterReader* reader){
+    std::string path = reader->params["--save"];
+    if(!gol->saveField(path)){
+        std::cout << "Error while trying to save File '" << path << std::endl;
+        return 0;
+    }
+    return 1;
+}
+
 int main(int argc, char** argv){
-    // TODO: measure time; [] overloading in parameterreader
-    ParameterReader reader;
+    // TODO: [] overloading in parameterreader
     GameOfLife gol;
+    ParameterReader reader;
     Stopwatch sw;
 
     // define input parameters
@@ -25,38 +54,21 @@ int main(int argc, char** argv){
     bool measure = !(reader.params.find("--measure") == reader.params.end());
 
     // gameoflife
-    // setup
-    if(measure) sw.start();
-    std::string path = reader.params["--load"].c_str();
-    if(!gol.validateField(path) || !gol.loadField(path)){
-        std::cout << "File '" << reader.params["--load"] << "' not found or invalid shape." << std::endl;
-        return 0;
+    if(measure){
+        if(sw.measure(setup, &gol, &reader)) std::cout << sw.elapsedTimeFormated() << ";";
+        else return 0;
+
+        if(sw.measure(compute, &gol, &reader)) std::cout << sw.elapsedTimeFormated() << ";";
+        else return 0;
+
+        if(sw.measure(finalize, &gol, &reader)) std::cout << sw.elapsedTimeFormated() << ";";
+        else return 0;
     }
-    if(measure) {
-        sw.stop();
-        std::cout << sw.elapsedTimeFormated() << ";";
+    else{
+        setup(&gol, &reader);
+        compute(&gol, &reader);
+        finalize(&gol, &reader);
     }
 
-    // computation
-    if(measure) sw.start();
-    int gens = std::stoi(reader.params["--generations"]);
-    gol.simulateGenerations(gens);
-    if(measure) {
-        sw.stop();
-        std::cout << sw.elapsedTimeFormated() << ";";
-    }
-
-    // finalization
-    if(measure) sw.start();
-    if(!gol.saveField(reader.params["--save"])){
-        std::cout << "Error while trying to save File '" << reader.params["--save"] << std::endl;
-        return 0;
-    }
-    if(measure) {
-        sw.stop();
-        std::cout << sw.elapsedTimeFormated() << std::endl;
-    }
-
-    //gol.printField();
     return 0;
 }

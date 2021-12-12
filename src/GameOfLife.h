@@ -1,3 +1,6 @@
+#ifndef GAMEOFLIFE
+#define GAMEOFLIFE
+
 #include <string>
 #include <fstream>
 
@@ -18,3 +21,5 @@ public:
     bool saveField(std::string path);
     void printField();
 };
+
+#endif
