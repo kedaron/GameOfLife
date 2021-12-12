@@ -55,14 +55,16 @@ int main(int argc, char** argv){
 
     // gameoflife
     if(measure){
-        if(sw.measure(setup, &gol, &reader)) std::cout << sw.elapsedTimeFormated() << ";";
+        std::string time;
+        if(sw.measure(setup, &gol, &reader)) time += sw.elapsedTimeFormated() + ";";
         else return 0;
 
-        if(sw.measure(compute, &gol, &reader)) std::cout << sw.elapsedTimeFormated() << ";";
+        if(sw.measure(compute, &gol, &reader)) time += sw.elapsedTimeFormated() + ";";
         else return 0;
 
-        if(sw.measure(finalize, &gol, &reader)) std::cout << sw.elapsedTimeFormated() << ";";
+        if(sw.measure(finalize, &gol, &reader)) time += sw.elapsedTimeFormated() + ";";
         else return 0;
+        std::cout << time;
     }
     else{
         setup(&gol, &reader);
