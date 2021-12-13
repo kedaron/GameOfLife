@@ -1,24 +1,21 @@
 #include <iostream>
 #include "ParameterReader.h"
 #include "GameOfLife.h"
-#include "Stopwatch.cpp"
+#include "Gol_Stopwatch.cpp"
 
-GameOfLife g_gol;
-ParameterReader g_reader;
-
-int setup(){
-    std::string path = g_reader["--load"];
-    if(!g_gol.validateField(path) || !g_gol.loadField(path)){
+int setup(GameOfLife* gol, ParameterReader* reader){
+    std::string path = (*reader)["--load"];
+    if(!gol->validateField(path) || !gol->loadField(path)){
         std::cout << "File '" << path << "' not found or invalid shape." << std::endl;
         return 0;
     }
     return 1;
 }
 
-int compute(){
+int compute(GameOfLife* gol, ParameterReader* reader){
     try{
-        int gens = std::stoi(g_reader["--generations"]);
-        g_gol.simulateGenerations(gens);
+        int gens = std::stoi((*reader)["--generations"]);
+        gol->simulateGenerations(gens);
     }catch(std::exception&){
         std::cout << "Invalid value for generations." << std::endl;
         return 0;
@@ -26,9 +23,9 @@ int compute(){
     return 1;
 }
 
-int finalize(){
-    std::string path = g_reader["--save"];
-    if(!g_gol.saveField(path)){
+int finalize(GameOfLife* gol, ParameterReader* reader){
+    std::string path = (*reader)["--save"];
+    if(!gol->saveField(path)){
         std::cout << "Error while trying to save File '" << path << std::endl;
         return 0;
     }
@@ -36,22 +33,25 @@ int finalize(){
 }
 
 int main(int argc, char** argv){
-    Stopwatch sw;
+    GameOfLife gol;
+    ParameterReader reader;
+    Gol_Stopwatch sw(&gol, &reader);
 
     // define input parameters
     const int epCount = 3, opCount = 1;
     const char *ep[epCount] = {"--load", "--save", "--generations"};
     const char *op[opCount] = {"--measure"};
-    g_reader.setExpectedParams(ep, epCount);
-    g_reader.setOptionalParams(op, opCount);
+    reader.setExpectedParams(ep, epCount);
+    reader.setOptionalParams(op, opCount);
 
-    if(!g_reader.parseParams(argv, argc)){
+    if(!reader.parseParams(argv, argc)){
         std::cout << "Invalid parameters..." << std::endl;
-        g_reader.printExpectedParams();
+        reader.printExpectedParams();
         std::cout << "Please Use the following shape:" << std::endl;
         std::cout << "--load <param1> --save <param2> --generations <param3> --measure" << std::endl;
+        return 0;
     }
-    bool measure = !(g_reader.params.find("--measure") == g_reader.params.end());
+    bool measure = !(reader.params.find("--measure") == reader.params.end());
 
     // gameoflife
     if(measure){
@@ -67,9 +67,9 @@ int main(int argc, char** argv){
         std::cout << time;
     }
     else{
-        setup();
-        compute();
-        finalize();
+        setup(&gol, &reader);
+        compute(&gol, &reader);
+        finalize(&gol, &reader);
     }
 
     return 0;
