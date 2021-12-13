@@ -17,77 +17,39 @@ int GameOfLife::pmod(int i, int n){
     return (i % n + n) % n;
 }
 
-int GameOfLife::checkSurroundings(char *const field, const int index, const char checkChar){
+int GameOfLife::checkSurroundings(char *const field, const int index, const int x, const int y, const char checkChar){
     int count = 0;
+    int wrapLeft = x-1, wrapRight = x+1;
+    int row = y*x_;
+    int topRow = row - x_;
+    int bottomRow = row + x_;
+    if(index%x_ == 0)
+        wrapLeft = ((x-1)%x_+x_)%x_; // positive mod
+    if(index%x_ == x_-1)
+        wrapRight = (x+1)%x_;
 
-    if(index%x_ == 0){
-        //left/right
-        if(field[index+x_-1] == checkChar)
-            count++;
-        if(field[(index+1)] == checkChar)
-            count++;
-        //top row
-        if(field[pmod(index-x_, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index-1, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index-x_+1, fieldSize_)] == checkChar)
-            count++;
+    //left/right
+    if(field[row+wrapLeft] == checkChar)
+        count++;
+    if(field[row+wrapRight] == checkChar)
+        count++;
 
-        //bottom row
-        if(field[pmod(index+x_, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index+2*x_-1, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index+x_+1, fieldSize_)] == checkChar)
-            count++;
-    }
-    else if(index%x_ == x_-1){
-        //left/right
-        if(field[index-x_+1] == checkChar)
-            count++;
-        if(field[(index-1)] == checkChar)
-            count++;
-        //top row
-        if(field[pmod(index-x_, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index-x_-1, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index-2*x_+1, fieldSize_)] == checkChar)
-            count++;
+    //top row
+    if(field[((topRow+wrapLeft)%fieldSize_+fieldSize_)%fieldSize_] == checkChar)
+        count++;
+    if(field[((topRow+x)%fieldSize_+fieldSize_)%fieldSize_] == checkChar)
+        count++;
+    if(field[((topRow+wrapRight)%fieldSize_+fieldSize_)%fieldSize_] == checkChar)
+        count++;
 
-        //bottom row
-        if(field[pmod(index+x_, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index+x_-1, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index+1, fieldSize_)] == checkChar)
-            count++;
-    }
-    else{
-        //left/right
-        if(field[(index-1)] == checkChar)
-            count++;
-        if(field[(index+1)] == checkChar)
-            count++;
-
-        //top row
-        if(field[pmod(index-x_, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index-x_-1, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index-x_+1, fieldSize_)] == checkChar)
-            count++;
-
-        //bottom row
-        if(field[pmod(index+x_, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index+x_-1, fieldSize_)] == checkChar)
-            count++;
-        if(field[pmod(index+x_+1, fieldSize_)] == checkChar)
-            count++;
-    }
-    
+    //bottom row
+    if(field[(bottomRow+wrapLeft)%fieldSize_] == checkChar)
+        count++;
+    if(field[(bottomRow+x)%fieldSize_] == checkChar)
+        count++;
+    if(field[(bottomRow+wrapRight)%fieldSize_] == checkChar)
+        count++;
+        
 
     return count;
 }
@@ -103,13 +65,13 @@ void GameOfLife::simulateGenerations(int gens){
                 const int i = y*x_ + x;
                 // Rule 1
                 if(snapshot[i] == '.'){
-                    if(checkSurroundings(snapshot, i, 'x') == 3)
+                    if(checkSurroundings(snapshot, i, x, y, 'x') == 3)
                         field_[i] = 'x';
                 }
                 
                 // Rule 2-4
                 else if(snapshot[i] == 'x' ){
-                    int s = checkSurroundings(snapshot, i, 'x');
+                    int s = checkSurroundings(snapshot, i, x, y, 'x');
                     if(s < 2 || s > 3)
                         field_[i] = '.';
                 }
