@@ -13,11 +13,7 @@ GameOfLife::~GameOfLife(){
     delete [] field_;
 }
 
-int GameOfLife::pmod(int i, int n){
-    return (i % n + n) % n;
-}
-
-int GameOfLife::checkSurroundings(char *const field, const int index, const int x, const int y, const char checkChar){
+int GameOfLife::checkSurroundings(char *const field, const int& index, const int& x, const int& y, const char& checkChar){
     int count = 0;
     int wrapLeft = x-1, wrapRight = x+1;
     int row = y*x_;
@@ -50,7 +46,6 @@ int GameOfLife::checkSurroundings(char *const field, const int index, const int 
     if(field[(bottomRow+wrapRight)%fieldSize_] == checkChar)
         count++;
         
-
     return count;
 }
 

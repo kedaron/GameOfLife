@@ -10,8 +10,7 @@ private:
     char *field_;
     void parseSize(std::ifstream& file, std::string& line, int& x, int& y);
     void output(std::streambuf* buf);
-    int checkSurroundings(char *const field, const int index, const int x, const int y, const char checkChar);
-    int pmod(int i, int j);
+    int checkSurroundings(char *const field, const int& index, const int& x, const int& y, const char& checkChar);
 public:
     GameOfLife();
     ~GameOfLife();
