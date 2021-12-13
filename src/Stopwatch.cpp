@@ -9,7 +9,7 @@
 #include "ParameterReader.h"
 
 class Stopwatch{
-private:
+protected:
     decltype(std::chrono::high_resolution_clock::now()) start_, stop_;
 public:
 
