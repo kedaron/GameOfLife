@@ -131,8 +131,7 @@ void GameOfLife::output(std::streambuf* buf){
     for(int y = 0; y < y_; y++){
         for(int x = 0; x < x_; x++)
             out << field_[y*x_ + x];
-        if(y < y_-1)
-            out << std::endl;
+        out << std::endl;
     }
 }
 
